@@ -30,8 +30,7 @@ rust 的机会，准备复刻一个 rust 的版本出来，所以才有了今天
 但是这个框架争议比较大，因为它每打包一个程序都会内嵌一个完整的浏览器内核，导致程序体积比较大，这样就会导致
 在你的计算机上同时存在着不同版本的多个浏览器内核，让人感觉很不舒服。
 
-而 Lorca 的工作原理相对简单一些，它默认使用你本地已安装的浏览器来渲染页面，它通过 WebSocket 实现前端的 HTML 和 JavaScript
-与后端的 Golang 通信。
+而 Lorca 的工作原理相对简单一些，它默认使用你本地已安装的浏览器来渲染页面，它通过 WebSocket 实现前端的 JavaScript 与后端的 Golang 通信。
 
 ## 3. 准备工作
 
@@ -81,6 +80,49 @@ rust 的机会，准备复刻一个 rust 的版本出来，所以才有了今天
 ## 4. 代码实现
 
 这里我们经过上面的准备工作，我们可以开始准备我们的第一行代码，从打开浏览器开始，通过上面的参数，我们以 Chrome 为例。
+
+```rust
+use std::os::unix::prelude::CommandExt;
+use std::process::Command;
+
+const BROWSERS: [&str; 1] = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    //Other Browser Path
+];
+
+const ARGS: [&str; 18] = [
+    "--user-data-dir=/tmp/chrome-temp",
+    "--disable-gpu",
+    "--remote-debugging-port=0",
+    "--disable-software-rasterizer",
+    "--disable-extensions",
+    "--disable-sync",
+    "--disable-default-apps",
+    "--disable-translate",
+    "--disable-logging",
+    "--disable-background-networking",
+    "--disable-notifications",
+    "--disable-popup-blocking",
+    "--hide-scrollbars",
+    "--mute-audio",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--disable-background-timer-throttling",
+    "--disable-features=site-per-process",
+];
+
+fn main() {
+    let mut command = Command::new(BROWSERS[0]);
+    command.args(&ARGS);
+    command.arg("--app=".to_owned() + "https://example.com");
+    command.exec();
+}
+```
+
+执行上面代码后，就得到了文章开头的效果。
+
+我们继续优化上面的代码，需要考虑到不同的操作系统的浏览器安装位置不通，和不通浏览器的启动参数不同，由此我们把上面的代码
+整理成一个统一的方法，如下:
 
 ```rust
 use std::{fs, thread};
@@ -162,5 +204,8 @@ pub(crate) fn open_browser(url: &str, width: u32, height: u32, x: u32, y: u32) {
     }
 }
 ```
+我们需要统一的参数暂时有：url, width, height, x, y，这样我们在 App 启动初期就可以通过调用这些方法来绘制
+我们的页面。
 
-我们需要统一的参数暂时有：url, width, height, x, y，这些参数可以通过后续的调整来实现更多的功能。
+
+
