@@ -2,7 +2,6 @@ baseURL = 'https://note.xka.io'
 languageCode = 'zh-cn'
 title = 'Notebook'
 theme = "whiteplain"
-disqusShortname = "example"
 
 copyright = "&copy; Copyright 2024 fe1fan"
 
