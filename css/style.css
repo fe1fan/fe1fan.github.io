@@ -23,6 +23,7 @@ hr {
 pre, code {
   font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
   background-color: #F0F3F3;
+  margin: 0;
 }
 pre {
   padding: 4px 8px;
@@ -122,7 +123,8 @@ blockquote blockquote blockquote blockquote {
 /* Code highlight */
 .highlight pre, .highlight code {
   background-color: inherit;
-  padding: 0;
+  padding-left: 20px;
+  border-radius: 10px;
 }
 
 /* Main contents */
