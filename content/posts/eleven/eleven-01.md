@@ -170,7 +170,6 @@ pub(crate) fn open_browser(url: &str, width: u32, height: u32, x: u32, y: u32) {
     // find the first browser that exists.
     let browser = BROWSERS.iter().find(|&&b| fs::metadata(b).is_ok());
     if let Some(browser) = browser {
-        let idx = BROWSERS.iter().position(|&b| b == *browser).unwrap();
         let args = ARGS.iter().map(|arg| {
             arg.replace("$width", &width.to_string())
                 .replace("$height", &height.to_string())
