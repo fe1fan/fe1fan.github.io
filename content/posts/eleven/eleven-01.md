@@ -36,8 +36,6 @@ rust 的机会，准备复刻一个 rust 的版本出来，所以才有了今天
 
 因为我们需要用户本地的浏览器作为载体，所以我们需要查看各个浏览器的启动参数，以达到启动后渲染页面并且执行我们入口代码的目的。
 
-### 3.1 Chrome
-
 在 [这个网站](https://peter.sh/experiments/chromium-command-line-switches/)，里面有比较详细的参数，我们选中我们需要的一些来说明用法
 
 这些是 Chrome 浏览器启动参数的解释：
@@ -69,17 +67,9 @@ rust 的机会，准备复刻一个 rust 的版本出来，所以才有了今天
 
 在 Chrome 中，当用户目录相同时被视为同一个 Session，为了不影响正常的浏览器行为，我们需要指定一个临时的启动目录。
 
-### 3.2 Firefox
-
-//TODO
-
-### 3.3 Edge
-
-//TODO
-
 ## 4. 代码实现
 
-这里我们经过上面的准备工作，我们可以开始准备我们的第一行代码，从打开浏览器开始，通过上面的参数，我们以 Chrome 为例。
+这里我们经过上面的准备工作，我们可以开始准备我们的第一行代码，从打开浏览器开始。
 
 ```rust
 use std::os::unix::prelude::CommandExt;
@@ -121,7 +111,7 @@ fn main() {
 
 执行上面代码后，就得到了文章开头的效果。
 
-我们继续优化上面的代码，需要考虑到不同的操作系统的浏览器安装位置不同，和不通浏览器的启动参数不同，由此我们把上面的代码
+我们继续优化上面的代码，需要考虑到不同的操作系统的浏览器安装位置不同，由此我们把上面的代码
 整理成一个统一的方法，如下:
 
 ```rust
@@ -129,8 +119,13 @@ use std::{fs, thread};
 use std::process::Command;
 
 #[cfg(target_os = "macos")]
-const BROWSERS: [&str; 1] = [
+const BROWSERS: [&str; 6] = [
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    "/usr/bin/google-chrome-stable",
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
 ];
 
 #[cfg(target_os = "windows")]
@@ -143,17 +138,10 @@ const BROWSERS: [&str; 1] = [
     "/usr/bin/google-chrome-stable",
 ];
 
-// The index of the browser in the BROWSERS array.
-const BROWSER_IDX: [usize; 1] = [
-    0
-];
-
-// The command line arguments for the browser.
-const ARGS: [[&str; 21]; 1] = [CHROME_ARGS];
-
 
 // The command line arguments for Chrome.
-const CHROME_ARGS: [&str; 21] = [
+const ARGS: [&str; 21] = [
+    //TODO add support other platforms
     "--user-data-dir=/tmp/chrome-temp",
     "--window-size=$width,$height",
     "--window-position=$x,$y",
@@ -183,7 +171,7 @@ pub(crate) fn open_browser(url: &str, width: u32, height: u32, x: u32, y: u32) {
     let browser = BROWSERS.iter().find(|&&b| fs::metadata(b).is_ok());
     if let Some(browser) = browser {
         let idx = BROWSERS.iter().position(|&b| b == *browser).unwrap();
-        let args = ARGS[BROWSER_IDX[idx]].iter().map(|arg| {
+        let args = ARGS.iter().map(|arg| {
             arg.replace("$width", &width.to_string())
                 .replace("$height", &height.to_string())
                 .replace("$x", &x.to_string())
@@ -198,7 +186,7 @@ pub(crate) fn open_browser(url: &str, width: u32, height: u32, x: u32, y: u32) {
             },
             Err(e) => println!("Failed to launch browser: {}", e),
         }
-        thread::sleep(std::time::Duration::from_secs(5));
+        thread::sleep(std::time::Duration::from_secs(10));
     } else {
         println!("No browser found");
     }
