@@ -1,6 +1,6 @@
 +++
 author = "Fe1Fan"
-title = "Rust Gui 框架开发第一篇"
+title = "Rust Gui 框架开发第一篇 -- 打开浏览器"
 date = "2024-03-20"
 description = ""
 tags = [
