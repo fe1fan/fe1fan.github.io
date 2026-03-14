@@ -1,0 +1,63 @@
+# Site
+site:
+  favicon: /favicon.svg
+  since: 2026
+  seal: true
+  seal_text: F
+  rss:
+    enabled: false
+    path: /atom.xml
+
+# Navigation menu
+menu:
+  - name: 首页
+    url: /
+  - name: 归档
+    url: /archives
+  - name: 分类
+    url: /categories
+  - name: 标签
+    url: /tags
+  - name: 关于
+    url: /about
+  - name: GitHub
+    url: https://github.com/fe1fan/fe1fan.github.io
+    target: _blank
+
+# Excerpt settings
+excerpt:
+  fallback:
+    enabled: true
+    length: 180
+
+# Table of Contents
+toc:
+  enabled: true
+  depth: 3
+  min_headings: 2
+
+# Dark mode
+dark_mode:
+  default: system
+  toggle: true
+
+# Reading progress bar
+progress_bar:
+  enabled: true
+
+# Back to top button
+back_to_top:
+  enabled: true
+
+# Comment systems
+comments:
+  enabled: false
+  provider: disqus
+  disqus:
+    shortname: ''
+
+# Analytics
+analytics:
+  google:
+    enabled: false
+    id: ''

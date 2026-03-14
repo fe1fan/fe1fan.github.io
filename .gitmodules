@@ -1,0 +1,3 @@
+[submodule "themes/shiro"]
+	path = themes/shiro
+	url = https://github.com/Acris/hexo-theme-shiro.git
